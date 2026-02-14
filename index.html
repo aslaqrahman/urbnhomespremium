@@ -29,6 +29,65 @@
         .font-serif { font-family: 'Italiana', serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
 
+        /* Splash Screen Styles */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        
+        .splash-content {
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .splash-text {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.5rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            animation: splashReveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            transform: translateY(100%);
+            opacity: 0;
+            white-space: nowrap;
+        }
+
+        .splash-line {
+            width: 0;
+            height: 1px;
+            background-color: #9d814d;
+            margin: 20px auto 0;
+            animation: lineGrow 0.8s ease-out 0.8s forwards;
+        }
+
+        .splash-hidden {
+            transform: translateY(-100%);
+        }
+
+        @keyframes splashReveal {
+            to { transform: translateY(0); opacity: 1; letter-spacing: 0.4em; }
+        }
+
+        @keyframes lineGrow {
+            to { width: 100px; }
+        }
+
+        @media (min-width: 768px) {
+            .splash-text { font-size: 4rem; letter-spacing: 0.4em; }
+            @keyframes splashReveal {
+                to { transform: translateY(0); opacity: 1; letter-spacing: 0.6em; }
+            }
+        }
+
         /* Subtle Static Grain */
         body::before {
             content: "";
@@ -37,25 +96,7 @@
             background: url('https://grainy-gradients.vercel.app/noise.svg');
             opacity: 0.04;
             pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* Static Broken Text (No Animation) */
-        .broken-title {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .broken-title span {
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-        
-        .broken-title:hover span:nth-child(odd) {
-            transform: translateY(-2px);
-        }
-        .broken-title:hover span:nth-child(even) {
-            transform: translateY(2px);
+            z-index: 9998;
         }
 
         /* Nav Line */
@@ -104,25 +145,63 @@
             object-fit: cover;
             display: block;
         }
+
+        /* Mobile Menu Transitions */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-white selection:text-black">
 
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="text-center">
+            <div class="splash-content">
+                <h1 class="splash-text">URBN HOME</h1>
+            </div>
+            <div class="splash-line"></div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="fixed w-full z-[100] bg-bg/90 backdrop-blur-md nav-line">
-        <div class="max-w-[1800px] mx-auto px-6 md:px-10 h-24 flex justify-between items-center">
-            <a href="#" class="font-header text-2xl tracking-tighter hover:text-white/70 transition-colors">
+        <div class="max-w-[1800px] mx-auto px-6 md:px-10 h-20 md:h-24 flex justify-between items-center">
+            <a href="#" class="font-header text-xl md:text-2xl tracking-tighter hover:text-white/70 transition-colors z-[102] relative">
                 URBN<span class="text-white/40">HOME</span>
             </a>
             
+            <!-- Desktop Menu -->
             <div class="hidden lg:flex items-center space-x-12 text-[10px] uppercase tracking-[0.4em] font-medium text-white/60">
                 <a href="#home" class="hover:text-white transition-all">Index</a>
                 <a href="#about" class="hover:text-white transition-all">Concept</a>
                 <a href="#listings" class="hover:text-white transition-all">Vault</a>
-                <a href="#contact" class="px-6 py-2 border border-white/20 text-white hover:bg-white hover:text-black transition-all">Connect</a>
+                <a href="https://voidwebsolutions.com" class="px-6 py-2 border border-white/20 text-white hover:bg-white hover:text-black transition-all">Connect</a>
             </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="lg:hidden text-white z-[102] relative focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-[#050505] z-[101] mobile-menu flex flex-col justify-center items-center">
+        <div class="flex flex-col space-y-8 text-center">
+            <a href="#home" class="font-header text-2xl text-white hover:text-gold transition-colors mobile-link">Index</a>
+            <a href="#about" class="font-header text-2xl text-white hover:text-gold transition-colors mobile-link">Concept</a>
+            <a href="#listings" class="font-header text-2xl text-white hover:text-gold transition-colors mobile-link">Vault</a>
+            <a href="https://voidwebsolutions.com" class="font-header text-2xl text-gold border-b border-gold pb-2 mobile-link">Connect</a>
+        </div>
+        <div class="absolute bottom-10 mono text-[10px] text-white/30 uppercase tracking-widest">
+            Structural Anarchy
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section id="home" class="relative h-screen w-full flex items-center overflow-hidden">
@@ -131,37 +210,36 @@
             <img src="https://images.unsplash.com/photo-1600607687940-4e524cb35a36?q=80&w=2070&auto=format&fit=crop" 
                  class="fill-image opacity-60" 
                  alt="Modern Architecture">
-            <!-- Gradient Overlay for text readability -->
             <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent"></div>
         </div>
         
         <div class="relative z-10 w-full px-6 md:px-20 pt-20">
             <div class="max-w-7xl">
-                <div class="flex items-center gap-4 mb-8 stutter-reveal" style="animation-delay: 0.1s;">
-                    <div class="h-[1px] w-12 bg-white/50"></div>
-                    <p class="mono text-[10px] text-white/70 uppercase tracking-[0.6em]">
+                <div class="flex items-center gap-4 mb-6 md:mb-8 stutter-reveal" style="animation-delay: 0.1s;">
+                    <div class="h-[1px] w-8 md:w-12 bg-white/50"></div>
+                    <p class="mono text-[9px] md:text-[10px] text-white/70 uppercase tracking-[0.4em] md:tracking-[0.6em]">
                         2026 Collection
                     </p>
                 </div>
 
-                <h1 class="font-header text-5xl md:text-8xl lg:text-[7vw] leading-[0.9] mb-12 stutter-reveal" style="animation-delay: 0.3s;">
+                <h1 class="font-header text-4xl sm:text-5xl md:text-8xl lg:text-[7vw] leading-[0.9] mb-8 md:mb-12 stutter-reveal" style="animation-delay: 0.3s;">
                     <span class="block text-white">DECONSTRUCT</span>
                     <span class="outline-title block">LUXURY</span>
                 </h1>
                 
-                <div class="grid md:grid-cols-12 gap-10 items-end stutter-reveal" style="animation-delay: 0.5s;">
-                    <div class="md:col-span-5 border-l-2 border-white/20 pl-8">
-                        <p class="text-sm text-white/80 leading-relaxed mono">
+                <div class="grid md:grid-cols-12 gap-8 md:gap-10 items-end stutter-reveal" style="animation-delay: 0.5s;">
+                    <div class="md:col-span-5 border-l-2 border-white/20 pl-6 md:pl-8">
+                        <p class="text-xs md:text-sm text-white/80 leading-relaxed mono">
                             We dismantle the traditional concept of home. <br>
                             Raw materials. Unfiltered light. Absolute silence.
                         </p>
                     </div>
                     <div class="md:col-span-7 flex justify-start md:justify-end">
                         <a href="#listings" class="group flex items-center gap-4">
-                            <div class="w-12 h-12 border border-white/30 rounded-full flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                                <i class="fas fa-arrow-down transform -rotate-45 group-hover:rotate-0 transition-transform duration-500"></i>
+                            <div class="w-10 h-10 md:w-12 md:h-12 border border-white/30 rounded-full flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                                <i class="fas fa-arrow-down transform -rotate-45 group-hover:rotate-0 transition-transform duration-500 text-sm md:text-base"></i>
                             </div>
-                            <span class="mono text-xs uppercase tracking-widest">Explore Vault</span>
+                            <span class="mono text-[10px] md:text-xs uppercase tracking-widest">Explore Vault</span>
                         </a>
                     </div>
                 </div>
@@ -170,17 +248,17 @@
     </section>
 
     <!-- Concept Section -->
-    <section id="about" class="py-32 bg-bg relative">
+    <section id="about" class="py-20 md:py-32 bg-bg relative">
         <div class="max-w-7xl mx-auto px-6 md:px-10">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
+            <div class="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
                 
                 <!-- Image Left -->
                 <div class="relative" data-aos="fade-right">
-                    <div class="image-container h-[600px] w-full">
+                    <div class="image-container h-[350px] md:h-[600px] w-full">
                         <img src="https://images.unsplash.com/photo-1512914890251-2f96a9b0bbe2?q=80&w=2071&auto=format&fit=crop" 
                              alt="Interior Concrete" class="fill-image brightness-90">
                     </div>
-                    <!-- Decorative floating box -->
+                    <!-- Decorative floating box (Hidden on Mobile) -->
                     <div class="absolute -bottom-10 -right-10 w-48 h-48 border border-white/10 bg-bg p-6 hidden md:flex flex-col justify-between z-10">
                         <i class="fas fa-quote-left text-white/20 text-2xl"></i>
                         <span class="mono text-[9px] uppercase tracking-widest text-white/60">The beauty of the unfinished.</span>
@@ -188,30 +266,30 @@
                 </div>
                 
                 <!-- Text Right -->
-                <div class="space-y-10" data-aos="fade-up">
-                    <h2 class="font-header text-4xl md:text-5xl uppercase leading-tight">
+                <div class="space-y-8 md:space-y-10" data-aos="fade-up">
+                    <h2 class="font-header text-3xl md:text-5xl uppercase leading-tight">
                         The Fracture <br> <span class="text-white/40">Philosophy</span>
                     </h2>
-                    <p class="text-white/60 mono text-sm leading-8">
+                    <p class="text-white/60 mono text-xs md:text-sm leading-7 md:leading-8">
                         Architecture often tries to hide its seams. We celebrate them. Our designs feature intentional gaps, shadow lines, and material transitions that remind you where the earth ends and art begins.
                     </p>
                     
-                    <div class="grid grid-cols-2 gap-8 pt-6 border-t border-white/10">
+                    <div class="grid grid-cols-2 gap-6 md:gap-8 pt-6 border-t border-white/10">
                         <div>
-                            <span class="block text-2xl font-serif mb-2">01.</span>
-                            <span class="mono text-[10px] uppercase tracking-widest text-white/50">Raw Concrete</span>
+                            <span class="block text-xl md:text-2xl font-serif mb-2">01.</span>
+                            <span class="mono text-[9px] md:text-[10px] uppercase tracking-widest text-white/50">Raw Concrete</span>
                         </div>
                         <div>
-                            <span class="block text-2xl font-serif mb-2">02.</span>
-                            <span class="mono text-[10px] uppercase tracking-widest text-white/50">Void Space</span>
+                            <span class="block text-xl md:text-2xl font-serif mb-2">02.</span>
+                            <span class="mono text-[9px] md:text-[10px] uppercase tracking-widest text-white/50">Void Space</span>
                         </div>
                         <div>
-                            <span class="block text-2xl font-serif mb-2">03.</span>
-                            <span class="mono text-[10px] uppercase tracking-widest text-white/50">Light Wells</span>
+                            <span class="block text-xl md:text-2xl font-serif mb-2">03.</span>
+                            <span class="mono text-[9px] md:text-[10px] uppercase tracking-widest text-white/50">Light Wells</span>
                         </div>
                         <div>
-                            <span class="block text-2xl font-serif mb-2">04.</span>
-                            <span class="mono text-[10px] uppercase tracking-widest text-white/50">Steel Frame</span>
+                            <span class="block text-xl md:text-2xl font-serif mb-2">04.</span>
+                            <span class="mono text-[9px] md:text-[10px] uppercase tracking-widest text-white/50">Steel Frame</span>
                         </div>
                     </div>
                 </div>
@@ -220,62 +298,62 @@
     </section>
 
     <!-- Listings Section -->
-    <section id="listings" class="py-32 bg-[#080808]">
+    <section id="listings" class="py-20 md:py-32 bg-[#080808]">
         <div class="max-w-[1800px] mx-auto px-6 md:px-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-20 pb-8 border-b border-white/10">
-                <h2 class="font-header text-4xl md:text-7xl">The Vault</h2>
-                <div class="text-right mt-6 md:mt-0">
-                    <p class="mono text-xs text-white/50 mb-2">AVAILABLE UNITS</p>
-                    <p class="font-serif text-3xl">03 / 12</p>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 pb-8 border-b border-white/10">
+                <h2 class="font-header text-3xl md:text-7xl">The Vault</h2>
+                <div class="text-left md:text-right mt-6 md:mt-0">
+                    <p class="mono text-[10px] md:text-xs text-white/50 mb-2">AVAILABLE UNITS</p>
+                    <p class="font-serif text-2xl md:text-3xl">03 / 12</p>
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-8">
                 <!-- Unit 1 -->
                 <div class="group cursor-pointer" data-aos="fade-up">
-                    <div class="image-container h-[500px] mb-6 relative">
+                    <div class="image-container h-[300px] md:h-[500px] mb-4 md:mb-6 relative">
                         <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" 
                              class="fill-image brightness-75 group-hover:brightness-100 transition-all duration-700" alt="Void Unit">
-                        <div class="absolute top-4 right-4 bg-white text-black mono text-[10px] font-bold px-3 py-1 uppercase">
+                        <div class="absolute top-4 right-4 bg-white text-black mono text-[9px] md:text-[10px] font-bold px-3 py-1 uppercase">
                             New Arrival
                         </div>
                     </div>
                     <div class="flex justify-between items-start border-t border-white/10 pt-4">
                         <div>
-                            <h3 class="font-header text-xl mb-1 group-hover:text-gold transition-colors">Obsidian Void</h3>
-                            <p class="mono text-[10px] text-white/50">NEW YORK, NY</p>
+                            <h3 class="font-header text-lg md:text-xl mb-1 group-hover:text-gold transition-colors">Obsidian Void</h3>
+                            <p class="mono text-[9px] md:text-[10px] text-white/50">NEW YORK, NY</p>
                         </div>
-                        <span class="mono text-sm">$8.4M</span>
+                        <span class="mono text-xs md:text-sm">$8.4M</span>
                     </div>
                 </div>
 
                 <!-- Unit 2 -->
                 <div class="group cursor-pointer md:mt-16" data-aos="fade-up" data-aos-delay="100">
-                    <div class="image-container h-[500px] mb-6 relative">
+                    <div class="image-container h-[300px] md:h-[500px] mb-4 md:mb-6 relative">
                         <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=2070&auto=format&fit=crop" 
                              class="fill-image brightness-75 group-hover:brightness-100 transition-all duration-700" alt="Pale Monolith">
                     </div>
                     <div class="flex justify-between items-start border-t border-white/10 pt-4">
                         <div>
-                            <h3 class="font-header text-xl mb-1 group-hover:text-gold transition-colors">Pale Monolith</h3>
-                            <p class="mono text-[10px] text-white/50">MALIBU, CA</p>
+                            <h3 class="font-header text-lg md:text-xl mb-1 group-hover:text-gold transition-colors">Pale Monolith</h3>
+                            <p class="mono text-[9px] md:text-[10px] text-white/50">MALIBU, CA</p>
                         </div>
-                        <span class="mono text-sm">$12.5M</span>
+                        <span class="mono text-xs md:text-sm">$12.5M</span>
                     </div>
                 </div>
 
                 <!-- Unit 3 -->
                 <div class="group cursor-pointer" data-aos="fade-up" data-aos-delay="200">
-                    <div class="image-container h-[500px] mb-6 relative">
+                    <div class="image-container h-[300px] md:h-[500px] mb-4 md:mb-6 relative">
                         <img src="https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?q=80&w=2074&auto=format&fit=crop" 
                              class="fill-image brightness-75 group-hover:brightness-100 transition-all duration-700" alt="Shadow Frame">
                     </div>
                     <div class="flex justify-between items-start border-t border-white/10 pt-4">
                         <div>
-                            <h3 class="font-header text-xl mb-1 group-hover:text-gold transition-colors">Shadow Frame</h3>
-                            <p class="mono text-[10px] text-white/50">ASPEN, CO</p>
+                            <h3 class="font-header text-lg md:text-xl mb-1 group-hover:text-gold transition-colors">Shadow Frame</h3>
+                            <p class="mono text-[9px] md:text-[10px] text-white/50">ASPEN, CO</p>
                         </div>
-                        <span class="mono text-sm">$5.9M</span>
+                        <span class="mono text-xs md:text-sm">$5.9M</span>
                     </div>
                 </div>
             </div>
@@ -283,14 +361,15 @@
     </section>
 
     <!-- Form Section -->
-    <section id="contact" class="py-32 bg-bg relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-1/2 h-full bg-[#0a0a0a] -skew-x-12 transform translate-x-32 -z-0"></div>
+    <section id="contact" class="py-20 md:py-32 bg-bg relative overflow-hidden">
+        <!-- Decoration - Hidden on small mobile screens -->
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-[#0a0a0a] -skew-x-12 transform translate-x-32 -z-0 hidden md:block"></div>
         
         <div class="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-24">
+            <div class="grid lg:grid-cols-2 gap-12 md:gap-24">
                 <div data-aos="fade-right">
-                    <h2 class="font-header text-5xl mb-8">Transmit<br>Inquiry</h2>
-                    <p class="text-white/60 mono text-sm leading-relaxed mb-12 max-w-md">
+                    <h2 class="font-header text-4xl md:text-5xl mb-6 md:mb-8">Transmit<br>Inquiry</h2>
+                    <p class="text-white/60 mono text-xs md:text-sm leading-relaxed mb-8 md:mb-12 max-w-md">
                         Private concierge. Encrypted channels. <br>
                         We protect your privacy as strictly as we design your sanctuary.
                     </p>
@@ -298,32 +377,32 @@
                     <div class="space-y-6">
                         <div class="flex items-center gap-4">
                             <span class="w-8 h-[1px] bg-white/20"></span>
-                            <span class="mono text-xs uppercase tracking-widest">+1 (800) VOID-001</span>
+                            <a href="tel:+60176343103" class="mono text-[10px] md:text-xs uppercase tracking-widest break-all hover:text-white transition-colors">+60176343103</a>
                         </div>
                         <div class="flex items-center gap-4">
                             <span class="w-8 h-[1px] bg-white/20"></span>
-                            <span class="mono text-xs uppercase tracking-widest">secure@urbn.dark</span>
+                            <a href="mailto:solutions.voidweb@gmail.com" class="mono text-[10px] md:text-xs uppercase tracking-widest break-all hover:text-white transition-colors">solutions.voidweb@gmail.com</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-[#0f0f0f] border border-white/5 p-10 md:p-12 shadow-2xl" data-aos="fade-left">
-                    <form class="space-y-8">
+                <div class="bg-[#0f0f0f] border border-white/5 p-6 md:p-12 shadow-2xl" data-aos="fade-left">
+                    <form class="space-y-6 md:space-y-8">
                         <div>
                             <label class="block mono text-[10px] uppercase tracking-widest text-white/40 mb-2">Identification</label>
-                            <input type="text" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:border-white focus:outline-none transition-colors" placeholder="Full Name">
+                            <input type="text" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:border-white focus:outline-none transition-colors text-sm" placeholder="Full Name">
                         </div>
                         <div>
                             <label class="block mono text-[10px] uppercase tracking-widest text-white/40 mb-2">Secure Comms</label>
-                            <input type="email" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:border-white focus:outline-none transition-colors" placeholder="Email Address">
+                            <input type="email" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:border-white focus:outline-none transition-colors text-sm" placeholder="Email Address">
                         </div>
                         <div>
                             <label class="block mono text-[10px] uppercase tracking-widest text-white/40 mb-2">Transmission</label>
-                            <textarea rows="4" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:border-white focus:outline-none transition-colors resize-none" placeholder="Message content..."></textarea>
+                            <textarea rows="4" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:border-white focus:outline-none transition-colors resize-none text-sm" placeholder="Message content..."></textarea>
                         </div>
-                        <button class="w-full bg-white text-black font-header font-bold uppercase py-4 tracking-widest hover:bg-neutral-200 transition-colors">
+                        <a href="https://voidwebsolutions.com" class="block text-center w-full bg-white text-black font-header font-bold uppercase py-4 tracking-widest hover:bg-neutral-200 transition-colors text-xs md:text-sm">
                             Initiate Protocol
-                        </button>
+                        </a>
                     </form>
                 </div>
             </div>
@@ -331,14 +410,14 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-16 border-t border-white/5 bg-black">
-        <div class="max-w-[1800px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-8">
+    <footer class="py-12 md:py-16 border-t border-white/5 bg-black">
+        <div class="max-w-[1800px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div class="flex flex-col gap-2">
-                <span class="font-header text-xl">URBN HOME</span>
+                <span class="font-header text-lg md:text-xl">URBN HOME</span>
                 <span class="mono text-[9px] text-white/30 uppercase tracking-widest"><a href="https://voidwebsolutions.com" class="hover:text-white transition-colors">VoidWeb Solutions</a> &copy; 2026</span>
             </div>
             
-            <div class="flex gap-8 mono text-[10px] uppercase tracking-widest text-white/50">
+            <div class="flex flex-wrap gap-6 md:gap-8 mono text-[9px] md:text-[10px] uppercase tracking-widest text-white/50">
                 <a href="#" class="hover:text-white transition-colors">Instagram</a>
                 <a href="#" class="hover:text-white transition-colors">Twitter</a>
                 <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
@@ -352,6 +431,43 @@
             duration: 1000,
             once: true,
             easing: 'ease-out-cubic'
+        });
+
+        // Splash Screen Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('splash-hidden');
+                // Trigger AOS refresh after splash is gone to ensure animations play correctly
+                setTimeout(() => {
+                    AOS.refresh();
+                }, 1000);
+            }, 2200); 
+        });
+
+        // Mobile Menu Logic
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
+
+        menuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.add('open');
+                menuBtn.innerHTML = '<i class="fas fa-times text-xl"></i>';
+            } else {
+                mobileMenu.classList.remove('open');
+                menuBtn.innerHTML = '<i class="fas fa-bars text-xl"></i>';
+            }
+        });
+
+        // Close menu when a link is clicked
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                isMenuOpen = false;
+                mobileMenu.classList.remove('open');
+                menuBtn.innerHTML = '<i class="fas fa-bars text-xl"></i>';
+            });
         });
     </script>
 </body>
